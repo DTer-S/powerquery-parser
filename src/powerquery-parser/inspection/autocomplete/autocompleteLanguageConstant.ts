@@ -71,8 +71,8 @@ function isNullableAllowedForAsNullablePrimitiveType(activeNode: ActiveNode, anc
     const position: Position = activeNode.position;
 
     // Ast.PrimitiveType
-    if (paired.node.kind === Ast.NodeKind.PrimitiveType && PositionUtils.isBeforeXor(position, paired, false)) {
-        return true;
+    if (paired.node.kind === Ast.NodeKind.PrimitiveType) {
+        return isNullableAllowedForPrimitiveType(paired);
     }
     // Ast.NullablePrimitiveType
     else if (paired.node.kind === Ast.NodeKind.NullablePrimitiveType) {
@@ -88,13 +88,11 @@ function isNullableAllowedForAsNullablePrimitiveType(activeNode: ActiveNode, anc
         const grandchild: TXorNode = maybeGrandchild;
 
         return (
-            // Ast.Constant
-            grandchild.node.kind === Ast.NodeKind.Constant ||
-            // before Ast.PrimitiveType
+            // Is it an unparsed Ast.Constant?
+            (grandchild.node.kind === Ast.NodeKind.Constant && grandchild.kind === XorNodeKind.Context) ||
+            // Else if it's Ast.PrimitiveType
             PositionUtils.isBeforeXor(position, grandchild, false)
         );
-    } else if (paired.node.kind === Ast.NodeKind.PrimitiveType) {
-        return isNullableAllowedForPrimitiveType(paired);
     } else {
         return false;
     }
