@@ -17,7 +17,6 @@ function assertGetParseOkAutocompleteOkPrimitiveType<S extends Parser.IParseStat
     position: Inspection.Position,
 ): AbridgedAutocomplete {
     const actual: Inspection.Autocomplete = TestAssertUtils.assertGetParseOkAutocompleteOk(settings, text, position);
-    Assert.isOk(actual.triedPrimitiveType);
     return getAbridgedAutocomplete(actual);
 }
 
@@ -27,7 +26,6 @@ function assertGetParseErrAutocompleteOkPrimitiveType<S extends Parser.IParseSta
     position: Inspection.Position,
 ): AbridgedAutocomplete {
     const actual: Inspection.Autocomplete = TestAssertUtils.assertGetParseErrAutocompleteOk(settings, text, position);
-    Assert.isOk(actual.triedPrimitiveType);
     return getAbridgedAutocomplete(actual);
 }
 
@@ -65,7 +63,7 @@ function getEmptyAbridgedAutocomplete(): AbridgedAutocomplete {
     };
 }
 
-function assertExpected(actual: AbridgedAutocomplete, expected: AbridgedAutocomplete): void {
+function assertExpected(expected: AbridgedAutocomplete, actual: AbridgedAutocomplete): void {
     expect(actual.primitiveTypes).to.have.members(expected.primitiveTypes);
     expect(actual.others).to.have.members(expected.others);
 }
