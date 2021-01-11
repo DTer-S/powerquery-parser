@@ -11,16 +11,12 @@ interface AbridgedAutocomplete {
     readonly others: ReadonlyArray<string>;
 }
 
-function assertGetParseErrAutocompleteOkLanguageConstant<S extends Parser.IParseState = Parser.IParseState>(
-    settings: LexSettings & ParseSettings<S>,
-    text: string,
-    position: Inspection.Position,
-): AbridgedAutocomplete {
-    const actual: Inspection.Autocomplete = TestAssertUtils.assertGetParseErrAutocompleteOk(settings, text, position);
-    return getAbridgedAutocomplete(actual);
+function assertExpected(expected: AbridgedAutocomplete, actual: AbridgedAutocomplete): void {
+    expect(actual.languageConstant).to.equal(expected.languageConstant);
+    expect(actual.others).to.have.members(expected.others);
 }
 
-function getAbridgedAutocomplete(autocomplete: Inspection.Autocomplete): AbridgedAutocomplete {
+function assertGetAbridgedAutocomplete(autocomplete: Inspection.Autocomplete): AbridgedAutocomplete {
     Assert.isOk(autocomplete.triedFieldAccess);
     Assert.isOk(autocomplete.triedKeyword);
     Assert.isOk(autocomplete.triedLanguageConstant);
@@ -45,9 +41,13 @@ function getAbridgedAutocomplete(autocomplete: Inspection.Autocomplete): Abridge
     };
 }
 
-function assertExpected(expected: AbridgedAutocomplete, actual: AbridgedAutocomplete): void {
-    expect(actual.languageConstant).to.equal(expected.languageConstant);
-    expect(actual.others).to.have.members(expected.others);
+function assertGetParseErrAutocompleteOkLanguageConstant<S extends Parser.IParseState = Parser.IParseState>(
+    settings: LexSettings & ParseSettings<S>,
+    text: string,
+    position: Inspection.Position,
+): AbridgedAutocomplete {
+    const actual: Inspection.Autocomplete = TestAssertUtils.assertGetParseErrAutocompleteOk(settings, text, position);
+    return assertGetAbridgedAutocomplete(actual);
 }
 
 describe(`Inspection - Autocomplete - Language constants`, () => {
@@ -97,7 +97,7 @@ describe(`Inspection - Autocomplete - Language constants`, () => {
         assertExpected(expected, actual);
     });
 
-    it(`WIP (a as n|`, () => {
+    it(`(a as n|`, () => {
         const [text, position]: [string, Inspection.Position] = TestAssertUtils.assertGetTextWithPosition(`(a as n|`);
         const expected: AbridgedAutocomplete = {
             languageConstant: Language.Constant.LanguageConstantKind.Nullable,

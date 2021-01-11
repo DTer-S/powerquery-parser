@@ -11,25 +11,12 @@ interface AbridgedAutocomplete {
     readonly others: ReadonlyArray<string>;
 }
 
-function assertGetParseOkAutocompleteOkPrimitiveType<S extends Parser.IParseState = Parser.IParseState>(
-    settings: LexSettings & ParseSettings<S>,
-    text: string,
-    position: Inspection.Position,
-): AbridgedAutocomplete {
-    const actual: Inspection.Autocomplete = TestAssertUtils.assertGetParseOkAutocompleteOk(settings, text, position);
-    return getAbridgedAutocomplete(actual);
+function assertExpected(expected: AbridgedAutocomplete, actual: AbridgedAutocomplete): void {
+    expect(actual.primitiveTypes).to.have.members(expected.primitiveTypes);
+    expect(actual.others).to.have.members(expected.others);
 }
 
-function assertGetParseErrAutocompleteOkPrimitiveType<S extends Parser.IParseState = Parser.IParseState>(
-    settings: LexSettings & ParseSettings<S>,
-    text: string,
-    position: Inspection.Position,
-): AbridgedAutocomplete {
-    const actual: Inspection.Autocomplete = TestAssertUtils.assertGetParseErrAutocompleteOk(settings, text, position);
-    return getAbridgedAutocomplete(actual);
-}
-
-function getAbridgedAutocomplete(autocomplete: Inspection.Autocomplete): AbridgedAutocomplete {
+function assertGetAbridgedAutocomplete(autocomplete: Inspection.Autocomplete): AbridgedAutocomplete {
     Assert.isOk(autocomplete.triedFieldAccess);
     Assert.isOk(autocomplete.triedKeyword);
     Assert.isOk(autocomplete.triedLanguageConstant);
@@ -56,16 +43,29 @@ function getAbridgedAutocomplete(autocomplete: Inspection.Autocomplete): Abridge
     };
 }
 
+function assertGetParseOkAutocompleteOkPrimitiveType<S extends Parser.IParseState = Parser.IParseState>(
+    settings: LexSettings & ParseSettings<S>,
+    text: string,
+    position: Inspection.Position,
+): AbridgedAutocomplete {
+    const actual: Inspection.Autocomplete = TestAssertUtils.assertGetParseOkAutocompleteOk(settings, text, position);
+    return assertGetAbridgedAutocomplete(actual);
+}
+
+function assertGetParseErrAutocompleteOkPrimitiveType<S extends Parser.IParseState = Parser.IParseState>(
+    settings: LexSettings & ParseSettings<S>,
+    text: string,
+    position: Inspection.Position,
+): AbridgedAutocomplete {
+    const actual: Inspection.Autocomplete = TestAssertUtils.assertGetParseErrAutocompleteOk(settings, text, position);
+    return assertGetAbridgedAutocomplete(actual);
+}
+
 function getEmptyAbridgedAutocomplete(): AbridgedAutocomplete {
     return {
         primitiveTypes: [],
         others: [],
     };
-}
-
-function assertExpected(expected: AbridgedAutocomplete, actual: AbridgedAutocomplete): void {
-    expect(actual.primitiveTypes).to.have.members(expected.primitiveTypes);
-    expect(actual.others).to.have.members(expected.others);
 }
 
 describe(`Inspection - Autocomplete - PrimitiveType`, () => {
