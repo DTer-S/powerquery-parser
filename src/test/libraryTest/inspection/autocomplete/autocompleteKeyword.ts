@@ -68,7 +68,7 @@ function getEmptyAbridgedAutocomplete(): AbridgedAutocomplete {
     };
 }
 
-describe(`WIP Inspection - Autocomplete - Keyword`, () => {
+describe(`Inspection - Autocomplete - Keyword`, () => {
     it("|", () => {
         const [text, position]: [string, Inspection.Position] = TestAssertUtils.assertGetTextWithPosition(`|`);
         const expected: AbridgedAutocomplete = {
